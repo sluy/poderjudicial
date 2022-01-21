@@ -1,5 +1,5 @@
 # Proyecto (laravel)
-Para implementar sólo resta correr las dependencias regulares del proyecto como cualquier instalación de laravel.
+Para implementar sólo resta correr las dependencias regulares del proyecto como cualquier instalación de laravel (composer install, la instalación de migraciones, passport, etc).
 
 Tecnologías usadas: Laravel 8.8 + MySQL 8.0 + QuasarFramework 2
 
@@ -61,53 +61,11 @@ Con este esquema podemos saber que se compró, cual fue su precio original, cuan
 
 El código está comentado y tratando de implementar lo mejor posible DRY (salvo contadas excepciones por cosas de tiempo). A su vez relaciones entre explícitas de tablas (en bd, modelos) fueron dejadas de lado por motivos de velocidad.
 
+### Notas adicionales
 
-# DOCKER
-
-## Levantar las instancias:
-
-```
-docker-compose build app
-docker-compose up -d
-```
-
-## Instalar dependencias de Laravel
-```
-docker-compose exec app composer install
-docker-compose exec app npm install
-docker-compose exec app php artisan key:generate
-```
-En el caso de un fresh install, inicializar la bd y el passport:
-
-```
-docker-compose exec app php artisan migrate
-docker-compose exec app php artisan passport:install
-```
-
-### Instalar dependencias del Front (Quasar)
-```
-docker exec -it poderjudicial-app bash
-cd front
-npm install
-```
-
-## Importar la vista de Quasar hacia Laravel:
-```
-docker exec -it poderjudicial-app bash
-cd front
-quasar build
-cd ..
-npm run dev
-```
-## Correr el modo dev del front (Quasar)
-
-```
-docker exec -it poderjudicial-app bash
-cd front
-quasar dev
-```
-
-** Por defecto correrá en localhost:8888**
-
-
-
+- El sistema está funcionando, sin embargo la zona de registro de usuarios no pudo ser probada (daba mas de 10 mins cargando por el tema del bug windows + docker); teóricamente debiera funcionar.
+- El CRUD de productos no está en el front, de lo que entendí en las instrucciones es que el crud debería de existir en la parte lógica y funcional pero en los puntos por hacer decia que el panel de "admin" sólo involucraría un botón para crear nuevas facturas y el listado de las existentes.
+- La url/puerto usado en la instalación de laravel fue localhost y 8000.
+- En el front el inicio de sesión no se está almacenando en sessionstorage o localstorage, es algo meramente volátil con variables (para optimizar tiempo, que había perdido mucho con el S.O).
+- Las validaciones están en back, en el front no usé librerías de validación por mismo tema tiempo.
+- Acabo de editar sólo el readme anexando esta información y eliminando la relativa a docker (era sólo para guíarme de lo que estaba haciendo). 
