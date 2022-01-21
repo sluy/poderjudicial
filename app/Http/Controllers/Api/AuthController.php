@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 
 class AuthController extends Controller
@@ -59,7 +60,8 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',
-            'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString()
+            'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString(),
+            'userdata' => $user->toArray()
         ]);
     }
 

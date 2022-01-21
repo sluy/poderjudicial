@@ -10,4 +10,12 @@ class Bought extends Model {
         'product_id',
         'invoice_id'
     ];
+
+    public function user () {
+        return $this->hasOne(User::class);
+    }
+
+    public function product () {
+        return $this->belongsTo(Product::class);
+    }
 }

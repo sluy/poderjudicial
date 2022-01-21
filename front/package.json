@@ -1,12 +1,12 @@
 {
-  "name": "puntocrypto-front",
+  "name": "poderjudicial",
   "version": "0.0.1",
-  "description": "Punto de venta con cryptodivisas para tu empresa",
-  "productName": "PuntoCrypto",
+  "description": "Prueba",
+  "productName": "Prueba",
   "author": "Stefan Luy",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.vue ./",
+    "lint": "eslint --ext .js,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
@@ -20,12 +20,10 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app": "^3.0.0",
-    "@types/node": "^12.20.21",
-    "@typescript-eslint/eslint-plugin": "^5.10.0",
-    "@typescript-eslint/parser": "^5.10.0",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-vue": "^7.0.0"
+    "eslint-plugin-vue": "^7.0.0",
+    "eslint-webpack-plugin": "^2.4.0"
   },
   "browserslist": [
     "last 10 Chrome versions",

@@ -20,7 +20,7 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check() || !user()->admin) {
+        if (!Auth::check() || !Auth::user()->admin) {
             abort(403,'Access denied!');
         }
         return $next($request);

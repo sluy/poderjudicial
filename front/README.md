@@ -1,6 +1,6 @@
-# PuntoCrypto (puntocrypto-front)
+# Prueba (poderjudicial)
 
-Punto de venta con cryptodivisas para tu empresa
+Prueba
 
 ## Install the dependencies
 ```bash

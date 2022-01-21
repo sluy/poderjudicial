@@ -6,27 +6,28 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Invoice;
 use App\Models\Bought;
 use App\Models\User;
+use App\Models\Product;
 use Carbon\Carbon;
 
 
-class ProductsController extends Controller
+class InvoicesController extends Controller
 {
     /**
      * Devuelve todas las facturas por orden cronológico.
      */
     public function index (Request $request) {
-        return Invoice::orderBy('created_at', 'desc')->get();
+        return Invoice::orderBy('created_at', 'desc')->with('user')->get();
     }
     /**
      * Devuelve la info de una factura.
      */
     public function get($id) {
-        return Invoice::findOrFail($id);
+        return Invoice::where('id',$id)->with(['boughts.product', 'user'])->firstOrFail();
     }
     /**
      * Devuelve todas las facturas asociadas a un usuario en particular.
      */
-    public function getByuser ($id) {
+    public function getByUser ($id) {
         return Invoice::where('user_id', $id)->orderBy('created_at', 'desc')->get();
     }
     /**
@@ -35,7 +36,7 @@ class ProductsController extends Controller
      */
     public function makeAll() {
         $done = [];
-        foreach(Bough::whereNull('invoice')->orderBy('created_at')->get() as $bought) {
+        foreach(Bought::whereNull('invoice_id')->orderBy('created_at')->get() as $bought) {
             if (in_array($bought->user_id, $done)) {
                 continue;
             }
@@ -44,53 +45,13 @@ class ProductsController extends Controller
             }
         }
         return response()->json([
-            'message' => count($done) . ' invoice(s) has been created.'
+            'count' => count($done)
         ]);
     }
 
-    public function store(Request $request) {
-        $request->validate([
-            'name' => 'required|string|max:64',
-            'info' => 'string|max:255',
-            'price' => 'required|numeric',
-            'tax' => 'required|numeric',
-            'enabled' => 'boolean'
-        ]);
-        return Product::create([
-            'name' => $request->name,
-            'info' => $request->info,
-            'price' => $this->formatNumber($request->price),
-            'tax' => $this->formatNumber($request->tax),
-            'enabled' => $request->enabled,
-        ]);
-    }
-    
-    public function update($id, Request $request) {
-        $product = Product::findOrFail($id);
-        $request->validate([
-            'name' => 'required|string|max:64',
-            'info' => 'string|max:255',
-            'price' => 'required|numeric',
-            'tax' => 'required|numeric',
-            'enabled' => 'boolean'
-        ]);
-        $product->name = $request->name;
-        $product->info = $request->info;
-        $product->price = $this->formatNumber($request->price);
-        $product->tax = $request->tax;
-        $product->enabled = $request->enabled;
-        $product->save();
-        return $product;
-    }
-
-    public function delete($id, Request $request) {
-        $product = Product::findOrFail($id);
-        $product->delete();
-        return response()->json(['message' => 'Product deleted successfully.']);
-    }
 
     protected function makeUserInvoice($userId) {
-        $boughts = Bough::whereNull('invoice')->where('user_id')->orderBy('created_at')->get();
+        $boughts = Bought::whereNull('invoice_id')->where('user_id', $userId)->orderBy('created_at')->get();
         if (empty($boughts)) {
             //no habian compras por anexar a la factura, ignoramos.
             return false;
@@ -103,6 +64,7 @@ class ProductsController extends Controller
         $date = Carbon::now()->toDateTimeString();
 
         $invoice = Invoice::create([
+            'user_id' => $userId,
             'total_price' => '0.00',
             'total_tax' => '0.00',
             'single_price' => '0.00'
@@ -128,7 +90,7 @@ class ProductsController extends Controller
         }
         //Actualizamos los totales almacenados en la factura con doble precisión.
         $invoice->total_price = $this->formatNumber($totalPrice);
-        $invoice->tax_price = $this->formatNumber($taxPrice);
+        $invoice->total_tax = $this->formatNumber($totalTax);
         $invoice->single_price = $this->formatNumber($totalSinglePrice);
         $invoice->save();
         //Devolvemos ok

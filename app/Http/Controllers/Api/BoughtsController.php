@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Bought;
 use App\Models\Product;
 
-class ProductsController extends Controller
+class BoughtsController extends Controller
 {
     /**
      * Lista todas las compras del usuario.

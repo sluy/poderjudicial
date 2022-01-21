@@ -20,7 +20,7 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: puntocrypto-db
+    container_name: poderjudicial-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -36,7 +36,7 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: puntocrypto-nginx
+    container_name: poderjudicial-nginx
     restart: unless-stopped
     ports:
       - "8000:80"

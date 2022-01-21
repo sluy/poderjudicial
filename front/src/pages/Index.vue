@@ -1,49 +1,26 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
+  <q-page class="flex flex-center">
+    <auth-panel v-if="isGuest()"></auth-panel>
+    <admin-panel v-else-if="isAdmin()"></admin-panel>
+    <user-panel v-else></user-panel>
+    <div>{{usermodel}}</div>
   </q-page>
 </template>
 
-<script lang="ts">
-import { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/CompositionComponent.vue';
-import { defineComponent, ref } from 'vue';
+<script>
+import { defineComponent } from 'vue';
+import AuthPanel from 'components/AuthPanel.vue'
+import AdminPanel from 'components/AdminPanel.vue'
+import UserPanel from 'components/UserPanel.vue'
+
+
+import { isAdmin, isGuest } from '../extras/auth';
 
 export default defineComponent({
   name: 'PageIndex',
-  components: { ExampleComponent },
+  components: { AuthPanel, AdminPanel, UserPanel },
   setup() {
-    const todos = ref<Todo[]>([
-      {
-        id: 1,
-        content: 'ct1'
-      },
-      {
-        id: 2,
-        content: 'ct2'
-      },
-      {
-        id: 3,
-        content: 'ct3'
-      },
-      {
-        id: 4,
-        content: 'ct4'
-      },
-      {
-        id: 5,
-        content: 'ct5'
-      }
-    ]);
-    const meta = ref<Meta>({
-      totalCount: 1200
-    });
-    return { todos, meta };
+    return { isGuest, isAdmin }
   }
-});
+})
 </script>

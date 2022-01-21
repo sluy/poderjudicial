@@ -12,10 +12,15 @@
         />
 
         <q-toolbar-title>
-          PoderJudicial
+          Poder Judicial
         </q-toolbar-title>
-
-        <div></div>
+        
+        <div v-if="isGuest()">
+          -
+        </div>
+        <div v-else>
+          ¡Bienvenido nuevamente!.
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -32,10 +37,55 @@
         </q-item-label>
 
         <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
+          title="Iniciar Sesión"
+          icon="school"
+          caption="Conecte con su cuenta"
+          :to="{ name: 'login'}"
+          v-show="isGuest()"
         />
+        
+        <EssentialLink
+          title="Registrarse"
+          icon="school"
+          caption="Cree su cuenta grátis"
+          :to="{ name: 'signup'}"
+          v-show="isGuest()"
+        />
+        
+        <EssentialLink
+          title="Comprar"
+          icon="school"
+          caption="Compre productos en nuestra plataforma"
+          :to="{ name: 'user'}"
+          v-show="!isGuest() && !isAdmin()"
+        />
+
+        <EssentialLink
+          title="Facturación"
+          icon="school"
+          caption="Genere y revise facturas"
+          :to="{ name: 'admin'}"
+          v-show="!isGuest() && isAdmin()"
+        />
+        <!--
+        <EssentialLink
+          title="Productos"
+          icon="school"
+          caption="Cree,edite y elimine el stock"
+          :to="{ name: 'products'}"
+          v-show="!isGuest() && isAdmin()"
+        />
+        -->
+
+        <EssentialLink
+          title="Salir"
+          icon="school"
+          caption="Cierre sesión en el dispositivo"
+          :to="{ name: 'signout'}"
+          v-show="!isGuest()"
+        />
+
+
       </q-list>
     </q-drawer>
 
@@ -45,7 +95,7 @@
   </q-layout>
 </template>
 
-<script lang="ts">
+<script>
 import EssentialLink from 'components/EssentialLink.vue'
 
 const linksList = [
@@ -55,45 +105,10 @@ const linksList = [
     icon: 'school',
     link: 'https://quasar.dev'
   },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
 ];
 
 import { defineComponent, ref } from 'vue'
+import {isGuest, isAdmin} from '../extras/auth';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -106,11 +121,14 @@ export default defineComponent({
     const leftDrawerOpen = ref(false)
 
     return {
+      user: false,
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },
+      isGuest : isGuest,
+      isAdmin : isAdmin
     }
   }
 })
